@@ -63,6 +63,13 @@ sudo -E -u postgres psql postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='ww
 sudo -E -u postgres psql postgres -tAc "ALTER USER nominatim WITH ENCRYPTED PASSWORD '$NOMINATIM_PASSWORD'" && \
 sudo -E -u postgres psql postgres -tAc "ALTER USER \"www-data\" WITH ENCRYPTED PASSWORD '${NOMINATIM_PASSWORD}'" && \
 
+DB_NAME=nominatim
+
+if sudo -E -u postgres psql ${DB_NAME} -c '\q' 2>&1; then
+   echo "database ${DB_NAME} exists"
+   exit 1
+fi
+
 sudo -E -u postgres psql postgres -c "DROP DATABASE IF EXISTS nominatim"
 
 chown -R nominatim:nominatim ${PROJECT_DIR}
